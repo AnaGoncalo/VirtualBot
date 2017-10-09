@@ -1,0 +1,46 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 27/06/2017, 07:40:41
+    Author     : Alessandro Souza -IFRN
+*/
+
+div.divtopo{
+    border-top: 4px solid darkmagenta;
+    box-shadow: 0 1px 0 rgba(12,13,14,0.15), 0 0 0 transparent, 0 0 0 transparent, 0 0 0 transparent;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #fffafa;
+   /*//height: 50px;*/
+}
+
+
+/*div.navbar{
+     
+    margin: 0 auto; 
+    background: green;
+
+}*/
+
+/*div.divbreadcrumb{
+    margin-left: 10px;
+    margin-top: 5px;
+    
+    
+    
+    //background-color: #fffafa;
+}*/
+
+.caixaroxa{
+    background-color: #fffafa;
+    border: 2px solid darkmagenta;
+}
+
+.fonteroxa{
+    color: darkmagenta;
+}
+

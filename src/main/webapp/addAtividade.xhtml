@@ -1,0 +1,104 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+	xmlns:f="http://xmlns.jcp.org/jsf/core">
+<h:head>
+	<title>Virtual Bot</title>
+	<h:outputStylesheet library="css" name="bootstrap.css" />
+	<h:outputStylesheet library="css" name="bootstrap-theme.min.css" />
+
+</h:head>
+<h:body>
+	<!--Página topo-->
+	<ui:include src="topo.xhtml" />
+
+	<!--Área de mensagens do sistema-->
+	<div style="margin-top: 60px">
+		<h:messages style="margin-left: 0;" class="alert alert-danger" />
+	</div>
+
+	<!--Conteúdo da página-->
+	<div class="container-fluid">
+
+		<div class="row page-header">
+			<div class="col-sm-12 text-center">
+				<h2>Nova Atividade</h2>
+			</div>
+		</div>
+
+		<div class="container">
+			<div class="row text-center panel-body">
+
+				<div class="col-md-2"></div>
+				<div class="col-md-8">
+					<h:form class="form-horizontal">
+						<div class="form-group">
+							<label for="inputTitulo" class="col-sm-2 control-label">Nome</label>
+							<div class="col-sm-10">
+								<h:inputText class="form-control" id="inputTitulo"
+									value="#{atividadeBean.atividade.nome}" />
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="inputDificuldade" class="col-sm-2 control-label">Dificuldade</label>
+							<div class="col-sm-10">
+								<h:selectOneMenu value="#{atividadeBean.atividade.dificuldade}"
+									class="form-control">
+									<f:selectItem itemLabel="Fácil" itemValue="Fácil" />
+									<f:selectItem itemLabel="Médio" itemValue="Médio" />
+									<f:selectItem itemLabel="Díficil" itemValue="Díficil" />
+								</h:selectOneMenu>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="inputDescricao" class="col-sm-2 control-label">Texto</label>
+							<div class="col-sm-10">
+								<h:inputTextarea class="form-control" rows="5"
+									id="inputDescricao"
+									value="#{atividadeBean.atividade.descricao}" />
+							</div>
+						</div>
+						<div class="form-group">
+							<ul class="list-inline">
+								<c:forEach items="#{atividadeBean.atividade.cenario.elementos}" var="elemento">
+									<li class="col-sm-1">
+									<h:commandButton class="btn #{elemento.nome} form-control" value="#"
+													style="border-radius:0;" actionListener="#{atividadeBean.mudarElemento(elemento)}">	
+									</h:commandButton>	
+									</li>
+								</c:forEach>
+							</ul>
+						</div>
+						<div class="form-group">
+							<div class="col-sm-4">
+								<h:commandButton class="btn btn-danger"
+									action="atividades.xhtml" value="Cancelar" />
+							</div>
+							<div class="col-sm-4">
+								<h:commandButton class="btn btn-default"
+									action="#{atividadeBean.limparCenario}" value="Limpar Cenário" />
+							</div>
+							<div class="col-sm-2"></div>
+							<div class="col-sm-4">
+								<h:commandButton class="btn btn-primary"
+									action="#{atividadeBean.addAtividade()}" value="Salvar" />
+							</div>
+						</div>
+					</h:form>
+
+
+				</div>
+				<div class="col-md-2"></div>
+
+			</div>
+
+
+		</div>
+	</div>
+
+</h:body>
+</html>
+
