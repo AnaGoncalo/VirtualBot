@@ -1,11 +1,14 @@
 package dominio;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
 @Entity
@@ -20,10 +23,21 @@ private static final long serialVersionUID = 1L;
     private String nome;
     private String dificuldade;
     private String descricao;
-    private Cenario cenario;
+//    private Cenario cenario;
+    
+    @ManyToMany
+    private List<Elemento> elementos;
     
     public Atividade(){
-    	cenario = new Cenario();
+//    	cenario = new Cenario();
+    	elementos = new ArrayList();
+//		for(int i = 0; i<3; i++){
+//			Elemento e = new Elemento();
+//			e.setId(1l);
+//			e.setObrigatoriedade(Opcao.OPCIONAL);
+//			e.setCor("btn-default");
+//			elementos.add(e);
+//		}
     }
     
     public int getQtdRespostas(){
@@ -54,12 +68,19 @@ private static final long serialVersionUID = 1L;
 	public void setDescricao(String descricao){
 		this.descricao = descricao;
 	}
-	public Cenario getCenario() {
-		return cenario;
+//	public Cenario getCenario() {
+//		return cenario;
+//	}
+//	public void setCenario(Cenario cenario) {
+//		this.cenario = cenario;
+//	}
+	public List<Elemento> getElementos() {
+		return elementos;
 	}
-	public void setCenario(Cenario cenario) {
-		this.cenario = cenario;
+	public void setElementos(List<Elemento> elementos) {
+		this.elementos = elementos;
 	}
+
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}

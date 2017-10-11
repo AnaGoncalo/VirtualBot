@@ -55,9 +55,9 @@
 						</div>
 						<div class="form-group">
 							<ul class="list-inline">
-								<c:forEach items="#{atividadeBean.atividade.cenario.elementos}" var="elemento">
+								<c:forEach items="#{atividadeBean.atividade.elementos}" var="elemento">
 									<li class="col-sm-1">
-									<h:commandButton class="btn #{elemento.nome} form-control" value="#"
+									<h:commandButton class="btn #{elemento.cor} form-control" value="#"
 													style="border-radius:0;">	
 									</h:commandButton>	
 									</li>
@@ -80,32 +80,32 @@
 											<f:facet name="header">
 												<h:outputText value="#" />
 											</f:facet>
-											<h:outputText value="#{atividade.id}" />
+											<h:outputText value="#" />
 										</h:column>
 										<h:column>
 											<f:facet name="header">
 												<h:outputText value="Aluno" />
 											</f:facet>
-											<h:outputText value="#{atividade.nome}" />
+											<h:outputText value="#" />
 										</h:column>
 										<h:column>
 											<f:facet name="header">
 												<h:outputText value="Data" />
 											</f:facet>
-											<h:outputText value="#{atividade.dificuldade}" />
+											<h:outputText value="#" />
 										</h:column>
 										<h:column>
 											<f:facet name="header">
 												<h:outputText value="Resultado" />
 											</f:facet>
-											<h:outputText value="#{atividade.qtdRespostas}" />
+											<h:outputText value="#" />
 										</h:column>
 										<h:column>
 											<f:facet name="header">
 												<h:outputText value="Opções" />
 											</f:facet>
 											<h:commandLink
-												action="#{atividadeBean.verAtividade(atividade)}"
+												action="#"
 												value="Ver" />
 										</h:column>
 									</h:dataTable>

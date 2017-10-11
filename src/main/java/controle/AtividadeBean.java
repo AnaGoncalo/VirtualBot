@@ -24,24 +24,30 @@ public class AtividadeBean {
 	private List<Atividade> atividades;
 	private Atividade atividade;
 	private List<Elemento> elementos;
-	private Cenario cenarioT;
+	private Elemento e;
 	
 	private AtividadeDAO atividadeDao;
-	private CenarioDAO cenarioDao;
 	private ElementoDAO elementoDao;
 	private String texto = "texto";
 	
 	public AtividadeBean(){
 		atividade = new Atividade();
-		cenarioT = new Cenario();
 		
 		atividadeDao = new AtividadeDAO();
-		cenarioDao = new CenarioDAO();
 		elementoDao = new ElementoDAO();
 		
-		elementos = elementoDao.listarTodos();
-		for(Elemento e: elementos){
-			System.out.println(e.getCor());
+//		elementos = elementoDao.listarTodos();
+//		for(Elemento e: elementos){
+//			System.out.println(e.getCor());
+//		}
+//		
+		elementos = new ArrayList();
+		for(int i = 0; i<24; i++){
+			e = new Elemento(); 
+			e.setId( ((Elemento) elementoDao.pesquisarPorId(1l)).getId());
+			e.setCor( ((Elemento) elementoDao.pesquisarPorId(1l)).getCor());
+			e.setObrigatoriedade( ((Elemento) elementoDao.pesquisarPorId(1l)).getObrigatoriedade());
+			elementos.add(e);
 		}
 		
 		listarAtividades();
@@ -52,34 +58,35 @@ public class AtividadeBean {
 	}
 	
 	public String addAtividade(){
-		cenarioT.setElementos(elementos);
-		cenarioDao.inserir(atividade.getCenario());
-		
-//		atividadeDao.inserir(atividade);
-//		atividade = new Atividade();
-//		listarAtividades();
+		atividade.setElementos(elementos);
+		atividadeDao.inserir(atividade);
+		atividade = new Atividade();
+		listarAtividades();
 		return "atividades.xhtml";
 	}
 	
 	public void mudarElemento(Elemento ele){
 		texto = "novotexto";
 		if(ele.getObrigatoriedade().equals(Opcao.OPCIONAL)){
+			ele.setId(3l);
 			ele.setObrigatoriedade(Opcao.OBRIGATORIO);
 			ele.setCor("btn-success");
 		}
 		else if(ele.getObrigatoriedade().equals(Opcao.OBRIGATORIO)){
+			ele.setId(2l);
 			ele.setObrigatoriedade(Opcao.PROIBIDO);
 			ele.setCor("btn-danger");
 		}
 		else {
+			ele.setId(1l);
 			ele.setObrigatoriedade(Opcao.OPCIONAL);
 			ele.setCor("btn-default");
 		}
 	}
 	
 	public void limparCenario(){
-		//problema.clear();
-		for(Elemento e: atividade.getCenario().getElementos()){
+		for(Elemento e: elementos){
+			e.setId(1l);
 			e.setObrigatoriedade(Opcao.OPCIONAL);
 			e.setCor("btn-default");
 		}
