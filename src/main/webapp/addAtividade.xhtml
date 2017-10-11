@@ -63,9 +63,20 @@
 						</div>
 						<div class="form-group">
 							<ul class="list-inline">
+								<c:forEach items="#{atividadeBean.elementos}" var="elemento">
+									<li class="col-sm-1">
+									<h:commandButton class="btn #{elemento.cor} form-control" value="#"
+													style="border-radius:0;" actionListener="#{atividadeBean.mudarElemento(elemento)}">	
+									</h:commandButton>	
+									</li>
+								</c:forEach>
+							</ul>
+						</div>
+						<div class="form-group">
+							<ul class="list-inline">
 								<c:forEach items="#{atividadeBean.atividade.cenario.elementos}" var="elemento">
 									<li class="col-sm-1">
-									<h:commandButton class="btn #{elemento.nome} form-control" value="#"
+									<h:commandButton class="btn #{elemento.cor} form-control" value="#"
 													style="border-radius:0;" actionListener="#{atividadeBean.mudarElemento(elemento)}">	
 									</h:commandButton>	
 									</li>

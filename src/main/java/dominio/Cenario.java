@@ -25,7 +25,7 @@ public class Cenario implements Serializable{
 		for(int i = 0; i<48; i++){
 			Elemento e = new Elemento();
 			e.setObrigatoriedade(Opcao.OPCIONAL);
-			e.setNome("btn-default");
+			e.setCor("btn-default");
 			elementos.add(e);
 		}
 	}

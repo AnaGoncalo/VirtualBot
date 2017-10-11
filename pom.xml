@@ -4,15 +4,15 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>tcc-ana</groupId>
-    <artifactId>tcc-ana</artifactId>
+    <groupId>VirtualBot</groupId>
+    <artifactId>VirtualBot</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>war</packaging>
-    <name>tcc-ana</name>
-    <description>Virtual Bot</description>
+    <name>virtual-bot</name>
+    <description>Virtual Bot - TCC 2017.2 Ana</description>
 
     <build>
-        <finalName>tcc-ana</finalName>
+        <finalName>virtual-bot</finalName>
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>

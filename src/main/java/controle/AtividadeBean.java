@@ -24,6 +24,7 @@ public class AtividadeBean {
 	private List<Atividade> atividades;
 	private Atividade atividade;
 	private List<Elemento> elementos;
+	private Cenario cenarioT;
 	
 	private AtividadeDAO atividadeDao;
 	private CenarioDAO cenarioDao;
@@ -32,12 +33,17 @@ public class AtividadeBean {
 	
 	public AtividadeBean(){
 		atividade = new Atividade();
+		cenarioT = new Cenario();
 		
 		atividadeDao = new AtividadeDAO();
 		cenarioDao = new CenarioDAO();
 		elementoDao = new ElementoDAO();
 		
 		elementos = elementoDao.listarTodos();
+		for(Elemento e: elementos){
+			System.out.println(e.getCor());
+		}
+		
 		listarAtividades();
 	}
 	
@@ -46,9 +52,12 @@ public class AtividadeBean {
 	}
 	
 	public String addAtividade(){
-		atividadeDao.inserir(atividade);
-		atividade = new Atividade();
-		listarAtividades();
+		cenarioT.setElementos(elementos);
+		cenarioDao.inserir(atividade.getCenario());
+		
+//		atividadeDao.inserir(atividade);
+//		atividade = new Atividade();
+//		listarAtividades();
 		return "atividades.xhtml";
 	}
 	
@@ -56,15 +65,15 @@ public class AtividadeBean {
 		texto = "novotexto";
 		if(ele.getObrigatoriedade().equals(Opcao.OPCIONAL)){
 			ele.setObrigatoriedade(Opcao.OBRIGATORIO);
-			ele.setNome("btn-success");
+			ele.setCor("btn-success");
 		}
 		else if(ele.getObrigatoriedade().equals(Opcao.OBRIGATORIO)){
 			ele.setObrigatoriedade(Opcao.PROIBIDO);
-			ele.setNome("btn-danger");
+			ele.setCor("btn-danger");
 		}
 		else {
 			ele.setObrigatoriedade(Opcao.OPCIONAL);
-			ele.setNome("btn-default");
+			ele.setCor("btn-default");
 		}
 	}
 	
@@ -72,7 +81,7 @@ public class AtividadeBean {
 		//problema.clear();
 		for(Elemento e: atividade.getCenario().getElementos()){
 			e.setObrigatoriedade(Opcao.OPCIONAL);
-			e.setNome("btn-default");
+			e.setCor("btn-default");
 		}
 	}
 	
@@ -103,6 +112,14 @@ public class AtividadeBean {
 
 	public void setTexto(String texto) {
 		this.texto = texto;
+	}
+
+	public List<Elemento> getElementos() {
+		return elementos;
+	}
+
+	public void setElementos(List<Elemento> elementos) {
+		this.elementos = elementos;
 	}
 	
 	

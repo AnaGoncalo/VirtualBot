@@ -20,7 +20,8 @@ public class Elemento implements Serializable{
     @Enumerated(EnumType.STRING)
     private Opcao obrigatoriedade;
 	
-	private String nome;
+	private String cor;
+	private String imagem;
 
 	public Long getId() {
 		return id;
@@ -34,10 +35,16 @@ public class Elemento implements Serializable{
 	public void setObrigatoriedade(Opcao obrigatoriedade) {
 		this.obrigatoriedade = obrigatoriedade;
 	}
-	public String getNome() {
-		return nome;
+	public String getCor() {
+		return cor;
 	}
-	public void setNome(String nome) {
-		this.nome = nome;
+	public void setCor(String cor) {
+		this.cor = cor;
+	}
+	public String getImagem() {
+		return imagem;
+	}
+	public void setImagem(String imagem) {
+		this.imagem = imagem;
 	}
 }
