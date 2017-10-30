@@ -13,9 +13,11 @@ import dominio.Atividade;
 import dominio.Cenario;
 import dominio.Elemento;
 import dominio.Opcao;
+import dominio._Atividade;
 import persistencia.AtividadeDAO;
 import persistencia.CenarioDAO;
 import persistencia.ElementoDAO;
+import persistencia._AtividadeDAO;
 
 @ManagedBean
 @SessionScoped
@@ -30,7 +32,12 @@ public class AtividadeBean {
 	private ElementoDAO elementoDao;
 	private String texto = "texto";
 	
+	private _AtividadeDAO _atividadeDao;
+	
 	public AtividadeBean(){
+		_atividadeDao = new _AtividadeDAO();
+		//_atividadeDao.listarTodos();
+		
 		atividade = new Atividade();
 		
 		atividadeDao = new AtividadeDAO();
@@ -50,7 +57,7 @@ public class AtividadeBean {
 			elementos.add(e);
 		}
 		
-		listarAtividades();
+		//listarAtividades();
 	}
 	
 	public void listarAtividades(){
