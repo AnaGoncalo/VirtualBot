@@ -1,23 +1,22 @@
 package controle;
 
 import java.util.ArrayList;
-import java.util.EventListener;
 import java.util.List;
 
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
 import javax.faces.bean.SessionScoped;
-import javax.faces.event.ActionEvent;
 
 import dominio.Atividade;
-import dominio.Cenario;
 import dominio.Elemento;
 import dominio.Opcao;
 import dominio._Atividade;
+import dominio._Elemento;
+import dominio._Opcao;
 import persistencia.AtividadeDAO;
-import persistencia.CenarioDAO;
 import persistencia.ElementoDAO;
 import persistencia._AtividadeDAO;
+import persistencia._ElementoDAO;
+import persistencia._OpcaoDAO;
 
 @ManagedBean
 @SessionScoped
@@ -33,10 +32,27 @@ public class AtividadeBean {
 	private String texto = "texto";
 	
 	private _AtividadeDAO _atividadeDao;
+	private _OpcaoDAO _opcaoDao;
+	private _ElementoDAO _elementoDao;
+	private _Atividade _atividade;
+	private List<_Atividade> _atividades;
+	private List<_Opcao> _opcoes;
+	private List<_Elemento> _elementos;
 	
 	public AtividadeBean(){
 		_atividadeDao = new _AtividadeDAO();
-		//_atividadeDao.listarTodos();
+		_opcaoDao = new _OpcaoDAO();
+		_elementoDao = new _ElementoDAO();
+		_atividade = new _Atividade();
+		_opcoes = _opcaoDao.listarTodos();
+		_elementos = new ArrayList();
+		_atividadeDao.listarTodos();
+		for(int i = 0; i < 60; i++){
+			_Elemento _e = new _Elemento();
+			_e.setPosicao(i);
+			_e.setOpcao( _opcoes.get(0));
+			_elementos.add(_e);
+		}
 		
 		atividade = new Atividade();
 		
@@ -48,47 +64,71 @@ public class AtividadeBean {
 //			System.out.println(e.getCor());
 //		}
 //		
-		elementos = new ArrayList();
-		for(int i = 0; i<24; i++){
-			e = new Elemento(); 
-			e.setId( ((Elemento) elementoDao.pesquisarPorId(1l)).getId());
-			e.setCor( ((Elemento) elementoDao.pesquisarPorId(1l)).getCor());
-			e.setObrigatoriedade( ((Elemento) elementoDao.pesquisarPorId(1l)).getObrigatoriedade());
-			elementos.add(e);
-		}
+//		elementos = new ArrayList();
+//		for(int i = 0; i<24; i++){
+//			e = new Elemento(); 
+//			e.setId( ((Elemento) elementoDao.pesquisarPorId(1l)).getId());
+//			e.setCor( ((Elemento) elementoDao.pesquisarPorId(1l)).getCor());
+//			e.setObrigatoriedade( ((Elemento) elementoDao.pesquisarPorId(1l)).getObrigatoriedade());
+//			elementos.add(e);
+//		}
 		
-		//listarAtividades();
+		listarAtividades();
 	}
 	
 	public void listarAtividades(){
 		atividades = atividadeDao.listarTodos();
+		_atividades = _atividadeDao.listarTodos();
 	}
 	
 	public String addAtividade(){
-		atividade.setElementos(elementos);
-		atividadeDao.inserir(atividade);
-		atividade = new Atividade();
+//		atividade.setElementos(elementos);
+//		atividadeDao.inserir(atividade);
+//		atividade = new Atividade();
+//		listarAtividades();
+		_atividadeDao.inserir(_atividade);
+		System.out.println("atiidade : " + _atividade.getNome());
+		_atividade = _atividadeDao.buscarPorTitulo(_atividade.getNome());
+		System.out.println("id da atividade cadastrada : " + _atividade.getId());
+		for(_Elemento _ele : _elementos){
+			_ele.setAtividade(_atividade);
+			_elementoDao.inserir(_ele);
+		}
 		listarAtividades();
 		return "atividades.xhtml";
 	}
 	
-	public void mudarElemento(Elemento ele){
-		texto = "novotexto";
-		if(ele.getObrigatoriedade().equals(Opcao.OPCIONAL)){
-			ele.setId(3l);
-			ele.setObrigatoriedade(Opcao.OBRIGATORIO);
-			ele.setCor("btn-success");
+	public void mudarElemento(_Elemento ele){
+		//ele.setOpcao(_opcoes.get(2));
+		System.out.println("id da opcao do elemento " + ele.getOpcao().getId() + ele.getOpcao().getImagem());
+		for(int i = 0; i < _opcoes.size(); i ++){
+			if(ele.getOpcao().getId() == _opcoes.get(i).getId()){
+				if(i+1 == _opcoes.size())
+					ele.setOpcao(_opcoes.get(0));
+				else
+					ele.setOpcao(_opcoes.get(i+1));
+				System.out.println("Troca elemento");
+				break;
+			}
 		}
-		else if(ele.getObrigatoriedade().equals(Opcao.OBRIGATORIO)){
-			ele.setId(2l);
-			ele.setObrigatoriedade(Opcao.PROIBIDO);
-			ele.setCor("btn-danger");
-		}
-		else {
-			ele.setId(1l);
-			ele.setObrigatoriedade(Opcao.OPCIONAL);
-			ele.setCor("btn-default");
-		}
+		
+//		texto = "novotexto";
+//		if(ele.getObrigatoriedade().equals(Opcao.OPCIONAL)){
+//			ele.setId(3l);
+//			ele.setObrigatoriedade(Opcao.OBRIGATORIO);
+//			ele.setCor("btn-success");
+//		}
+//		else if(ele.getObrigatoriedade().equals(Opcao.OBRIGATORIO)){
+//			ele.setId(2l);
+//			ele.setObrigatoriedade(Opcao.PROIBIDO);
+//			ele.setCor("btn-danger");
+//		}
+//		else {
+//			ele.setId(1l);
+//			ele.setObrigatoriedade(Opcao.OPCIONAL);
+//			ele.setCor("btn-default");
+//		}
+		
 	}
 	
 	public void limparCenario(){
@@ -99,8 +139,10 @@ public class AtividadeBean {
 		}
 	}
 	
-	public String verAtividade(Atividade atividade){
-		this.atividade = atividade;
+	public String verAtividade(_Atividade _ativ){
+		this._atividade = _ativ;
+		this._elementos = _elementoDao.getElementosPorAtividade(_atividade);
+		System.out.println("lista ok");
 		return "atividade.xhtml";
 	}
 	
@@ -135,6 +177,77 @@ public class AtividadeBean {
 	public void setElementos(List<Elemento> elementos) {
 		this.elementos = elementos;
 	}
-	
-	
+
+	public AtividadeDAO getAtividadeDao() {
+		return atividadeDao;
+	}
+
+	public void setAtividadeDao(AtividadeDAO atividadeDao) {
+		this.atividadeDao = atividadeDao;
+	}
+
+	public ElementoDAO getElementoDao() {
+		return elementoDao;
+	}
+
+	public void setElementoDao(ElementoDAO elementoDao) {
+		this.elementoDao = elementoDao;
+	}
+
+	public _AtividadeDAO get_atividadeDao() {
+		return _atividadeDao;
+	}
+
+	public void set_atividadeDao(_AtividadeDAO _atividadeDao) {
+		this._atividadeDao = _atividadeDao;
+	}
+
+	public _OpcaoDAO get_opcaoDao() {
+		return _opcaoDao;
+	}
+
+	public void set_opcaoDao(_OpcaoDAO _opcaoDao) {
+		this._opcaoDao = _opcaoDao;
+	}
+
+	public _ElementoDAO get_elementoDao() {
+		return _elementoDao;
+	}
+
+	public void set_elementoDao(_ElementoDAO _elementoDao) {
+		this._elementoDao = _elementoDao;
+	}
+
+	public _Atividade get_atividade() {
+		return _atividade;
+	}
+
+	public void set_atividade(_Atividade _atividade) {
+		this._atividade = _atividade;
+	}
+
+	public List<_Opcao> get_opcoes() {
+		return _opcoes;
+	}
+
+	public void set_opcoes(List<_Opcao> _opcoes) {
+		this._opcoes = _opcoes;
+	}
+
+	public List<_Elemento> get_elementos() {
+		return _elementos;
+	}
+
+	public void set_elementos(List<_Elemento> _elementos) {
+		this._elementos = _elementos;
+	}
+
+	public List<_Atividade> get_atividades() {
+		return _atividades;
+	}
+
+	public void set_atividades(List<_Atividade> _atividades) {
+		this._atividades = _atividades;
+	}
+		
 }

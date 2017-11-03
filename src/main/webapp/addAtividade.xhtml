@@ -43,13 +43,13 @@
 							<label for="inputTitulo" class="col-sm-2 control-label">Nome</label>
 							<div class="col-sm-10">
 								<h:inputText class="form-control" id="inputTitulo"
-									value="#{atividadeBean.atividade.nome}" />
+									value="#{atividadeBean._atividade.nome}" />
 							</div>
 						</div>
 						<div class="form-group">
 							<label for="inputDificuldade" class="col-sm-2 control-label">Dificuldade</label>
 							<div class="col-sm-10">
-								<h:selectOneMenu value="#{atividadeBean.atividade.dificuldade}"
+								<h:selectOneMenu value="#{atividadeBean._atividade.dificuldade}"
 									class="form-control">
 									<f:selectItem itemLabel="Fácil" itemValue="Fácil" />
 									<f:selectItem itemLabel="Médio" itemValue="Médio" />
@@ -62,16 +62,29 @@
 							<div class="col-sm-10">
 								<h:inputTextarea class="form-control" rows="5"
 									id="inputDescricao"
-									value="#{atividadeBean.atividade.descricao}" />
+									value="#{atividadeBean._atividade.descricao}" />
 							</div>
 						</div>
 						<div class="form-group">
 							<ul class="list-inline">
-								<c:forEach items="#{atividadeBean.elementos}" var="elemento">
+								<c:forEach items="#{atividadeBean._opcoes}" var="elemento">
 									<li class="col-sm-1">
-									<h:commandButton class="btn #{elemento.cor} form-control" value="#"
-													style="border-radius:0;" actionListener="#{atividadeBean.mudarElemento(elemento)}">	
-									</h:commandButton>	
+									<h:commandLink class="thumbnail" style="border-radius:0;" height="50px"
+													actionListener="#{atividadeBean.mudarElemento(elemento)}">
+													<img src="#{elemento.cor}" alt="algo" height="40px"/>
+									</h:commandLink>	
+									</li>
+								</c:forEach>
+							</ul>
+						</div>
+						<div class="form-group">
+							<ul class="list-inline">
+								<c:forEach items="#{atividadeBean._elementos}" var="elemento">
+									<li class="col-sm-1">
+									<h:commandLink class="thumbnail" style="border-radius:0; margin:0; padding:0;" height="50px"
+													actionListener="#{atividadeBean.mudarElemento(elemento)}">
+													<img src="#{elemento.opcao.cor}" alt="algo" height="40px"/>
+									</h:commandLink>
 									</li>
 								</c:forEach>
 							</ul>

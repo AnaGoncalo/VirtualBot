@@ -28,14 +28,14 @@
 
 		<div class="row">
 			<div class="col-sm-12 text-center">
-				<h2>#{atividadeBean.atividade.nome}
-				<c:if test="#{atividadeBean.atividade.dificuldade == 'Fácil'}">
+				<h2>#{atividadeBean._atividade.nome}
+				<c:if test="#{atividadeBean._atividade.dificuldade == 'Fácil'}">
 					<small><span class="label label-success">Fácil</span></small>
 				</c:if>
-				<c:if test="#{atividadeBean.atividade.dificuldade == 'Díficil'}">
+				<c:if test="#{atividadeBean._atividade.dificuldade == 'Díficil'}">
 					<small><span class="label label-danger">Díficil</span></small>
 				</c:if>
-				<c:if test="#{atividadeBean.atividade.dificuldade == 'Médio'}">
+				<c:if test="#{atividadeBean._atividade.dificuldade == 'Médio'}">
 					<small><span class="label label-warning">Médio</span></small>
 				</c:if>
 				</h2>
@@ -50,16 +50,16 @@
 					<h:form class="form-horizontal">
 						<div class="form-group">
 							<div class="col-sm-12">
-                                <p> #{atividadeBean.atividade.descricao}</p>
+                                <p> #{atividadeBean._atividade.descricao}</p>
                             </div>
 						</div>
 						<div class="form-group">
 							<ul class="list-inline">
-								<c:forEach items="#{atividadeBean.atividade.elementos}" var="elemento">
+								<c:forEach items="#{atividadeBean._elementos}" var="elemento">
 									<li class="col-sm-1">
-									<h:commandButton class="btn #{elemento.cor} form-control" value="#"
-													style="border-radius:0;">	
-									</h:commandButton>	
+									<h:commandLink class="thumbnail" style="border-radius:0; margin:0; padding:0;" height="50px">
+													<img src="#{elemento.opcao.cor}" alt="algo" height="40px"/>
+									</h:commandLink>
 									</li>
 								</c:forEach>
 							</ul>
