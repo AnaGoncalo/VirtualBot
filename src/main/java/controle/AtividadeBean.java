@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
 
 import dominio.Atividade;
 import dominio.Elemento;
@@ -59,33 +60,17 @@ public class AtividadeBean {
 		atividadeDao = new AtividadeDAO();
 		elementoDao = new ElementoDAO();
 		
-//		elementos = elementoDao.listarTodos();
-//		for(Elemento e: elementos){
-//			System.out.println(e.getCor());
-//		}
-//		
-//		elementos = new ArrayList();
-//		for(int i = 0; i<24; i++){
-//			e = new Elemento(); 
-//			e.setId( ((Elemento) elementoDao.pesquisarPorId(1l)).getId());
-//			e.setCor( ((Elemento) elementoDao.pesquisarPorId(1l)).getCor());
-//			e.setObrigatoriedade( ((Elemento) elementoDao.pesquisarPorId(1l)).getObrigatoriedade());
-//			elementos.add(e);
-//		}
-		
 		listarAtividades();
 	}
 	
 	public void listarAtividades(){
+		//limparCenario();
+		_atividade = new _Atividade();
 		atividades = atividadeDao.listarTodos();
 		_atividades = _atividadeDao.listarTodos();
 	}
 	
 	public String addAtividade(){
-//		atividade.setElementos(elementos);
-//		atividadeDao.inserir(atividade);
-//		atividade = new Atividade();
-//		listarAtividades();
 		_atividadeDao.inserir(_atividade);
 		System.out.println("atiidade : " + _atividade.getNome());
 		_atividade = _atividadeDao.buscarPorTitulo(_atividade.getNome());
@@ -99,7 +84,6 @@ public class AtividadeBean {
 	}
 	
 	public void mudarElemento(_Elemento ele){
-		//ele.setOpcao(_opcoes.get(2));
 		System.out.println("id da opcao do elemento " + ele.getOpcao().getId() + ele.getOpcao().getImagem());
 		for(int i = 0; i < _opcoes.size(); i ++){
 			if(ele.getOpcao().getId() == _opcoes.get(i).getId()){
@@ -110,32 +94,14 @@ public class AtividadeBean {
 				System.out.println("Troca elemento");
 				break;
 			}
-		}
-		
-//		texto = "novotexto";
-//		if(ele.getObrigatoriedade().equals(Opcao.OPCIONAL)){
-//			ele.setId(3l);
-//			ele.setObrigatoriedade(Opcao.OBRIGATORIO);
-//			ele.setCor("btn-success");
-//		}
-//		else if(ele.getObrigatoriedade().equals(Opcao.OBRIGATORIO)){
-//			ele.setId(2l);
-//			ele.setObrigatoriedade(Opcao.PROIBIDO);
-//			ele.setCor("btn-danger");
-//		}
-//		else {
-//			ele.setId(1l);
-//			ele.setObrigatoriedade(Opcao.OPCIONAL);
-//			ele.setCor("btn-default");
-//		}
-		
+		}		
 	}
 	
 	public void limparCenario(){
-		for(Elemento e: elementos){
-			e.setId(1l);
-			e.setObrigatoriedade(Opcao.OPCIONAL);
-			e.setCor("btn-default");
+		for(_Elemento e: _elementos){
+			_Elemento _e = new _Elemento();
+			_e.setOpcao( _opcoes.get(0));
+			_elementos.add(_e);
 		}
 	}
 	
@@ -144,6 +110,11 @@ public class AtividadeBean {
 		this._elementos = _elementoDao.getElementosPorAtividade(_atividade);
 		System.out.println("lista ok");
 		return "atividade.xhtml";
+	}
+	
+	public String responderAtividade(_Atividade ati){
+		FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("atividade", ati);
+		return "responder.xhtml";
 	}
 	
 	public Atividade getAtividade(){

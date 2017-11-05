@@ -64,10 +64,15 @@
 								</c:forEach>
 							</ul>
 						</div>
-						
+						<div>
+							<div class="col-sm-12">
+								<h:commandLink  class="btn btn-primary"
+									action="#{atividadeBean.responderAtividade(_atividade)}" value="Responder" />
+							</div>
+						</div>
 						<div class="form-group">
 							<hr/>
-							<label for="inputDificuldade" class="col-sm-2 control-label">Respostas</label>
+							<label class="col-sm-2 control-label">Respostas</label>
 						</div>
 						<div class="form-group">
 							<div class="col-sm-12">

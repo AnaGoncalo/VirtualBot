@@ -76,10 +76,8 @@
 							<f:facet name="header">
 								<h:outputText value="Opções" />
 							</f:facet>
-							<h:commandLink action="#{atividadeBean.verAtividade(atividade)}"
-								value="Ver " />
-							<h:commandLink action="#" value="| Editar " />
-							<h:commandLink action="#" value="| Excluir" />
+							<h:commandLink  role="separator" class="divider" 
+								action="#{atividadeBean.verAtividade(atividade)}" value="Ver " />
 						</h:column>
 					</h:dataTable>
 				</h:form>
