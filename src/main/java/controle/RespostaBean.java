@@ -68,27 +68,51 @@ public class RespostaBean {
 	public void simular(){
 		limparCenario();
 		String co = resposta.getCodigo();
-		co = co.replace("\\n", " ");
+		System.out.println(co);
+		co = co.replaceAll("\n", "");
+		System.out.println(co);
 		String[] codigo = co.split(" ");
-		int posicao = 1;
+		int posicao = 0;
+		int direcao = 1;
 		for(String comando: codigo){
 			System.out.println(comando);
-			if(comando.equals("inicio"))
-				continue;
+			if(comando.equals("inicio")){
+				_elementos.get(posicao).setOpcao(_opcoes.get(1));
+			}
 			if(comando.contains("frente")){
 				System.out.println("Achou comando frente + " + posicao);
 				String[] valores = comando.split(",");
 				int tempo = Integer.parseInt(valores[2].substring(0, valores[2].length()-1));
 				System.out.println("tempo: " + tempo);
 				for(int i = 0; i < tempo/1000; i++){
-					_elementos.get(posicao).setOpcao(_opcoes.get(3));
-					posicao++;
+					posicao += incremento(direcao);
+					if(direcao == 1)
+						_elementos.get(posicao).setOpcao(_opcoes.get(3));
+					if(direcao == 2)
+						_elementos.get(posicao).setOpcao(_opcoes.get(4));
 				}
+			}
+			if(comando.contains("girar")){
+				System.out.println("Achou comando girar + " + posicao);
+				direcao = 2;
+				if(_elementos.get(posicao).getOpcao() == _opcoes.get(3) )
+					_elementos.get(posicao).setOpcao(_opcoes.get(5));
+				//posicao += incremento(direcao);
 			}
 				
 		}
 		
 		resposta.setResultado(validar());
+	}
+	
+	private int incremento(int direcao){
+		// direção = 1 => direita (incremento +1)
+		if(direcao == 1)
+			return 1;
+		else if(direcao == 2)
+			return 12;
+		else
+			return 0;
 	}
 	
 	private String validar(){
