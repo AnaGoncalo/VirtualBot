@@ -58,7 +58,7 @@ public class AtividadeBean {
 
 	public String addAtividade() {
 		_atividadeDao.inserir(_atividade);
-		System.out.println("atiidade : " + _atividade.getNome());
+		System.out.println("atividade : " + _atividade.getNome());
 		_atividade = _atividadeDao.buscarPorTitulo(_atividade.getNome());
 		System.out.println("id da atividade cadastrada : " + _atividade.getId());
 		for (_Elemento _ele : _elementos) {

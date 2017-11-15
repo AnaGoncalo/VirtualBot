@@ -66,6 +66,8 @@ public class RespostaBean {
 	}
 	
 	public void simular(){
+		/* inicio frente(11) direita(1) frente(4) fim */
+		
 		limparCenario();
 		String co = resposta.getCodigo();
 		System.out.println(co);
@@ -81,23 +83,60 @@ public class RespostaBean {
 			}
 			if(comando.contains("frente")){
 				System.out.println("Achou comando frente + " + posicao);
-				String[] valores = comando.split(",");
-				int tempo = Integer.parseInt(valores[2].substring(0, valores[2].length()-1));
-				System.out.println("tempo: " + tempo);
-				for(int i = 0; i < tempo/1000; i++){
+				String tempo = comando;
+				tempo = tempo.replaceAll("frente", "");
+				tempo = tempo.substring(1, tempo.length()-1);
+				System.out.println("Tempo: " + tempo);
+				for(int i = 0; i < Integer.parseInt(tempo); i++){
 					posicao += incremento(direcao);
-					if(direcao == 1)
+					if(direcao == 1 || direcao == 3)
 						_elementos.get(posicao).setOpcao(_opcoes.get(3));
-					if(direcao == 2)
+					if(direcao == 2 || direcao == 4)
 						_elementos.get(posicao).setOpcao(_opcoes.get(4));
 				}
 			}
-			if(comando.contains("girar")){
-				System.out.println("Achou comando girar + " + posicao);
-				direcao = 2;
-				if(_elementos.get(posicao).getOpcao() == _opcoes.get(3) )
+			if(comando.contains("direita")){
+				System.out.println("Achou comando direita + " + posicao);
+				if(direcao == 1)
+					direcao = 2;
+				else if(direcao == 2)
+					direcao = 3;
+				else if(direcao == 3)
+					direcao = 4;
+				else if(direcao == 4)
+					direcao = 1;
+				
+				if(direcao == 2 && _elementos.get(posicao).getOpcao() == _opcoes.get(3) )
 					_elementos.get(posicao).setOpcao(_opcoes.get(5));
-				//posicao += incremento(direcao);
+				if(direcao == 3 && _elementos.get(posicao).getOpcao() == _opcoes.get(4) )
+					_elementos.get(posicao).setOpcao(_opcoes.get(6));
+				if(direcao == 4 && _elementos.get(posicao).getOpcao() == _opcoes.get(3) )
+					_elementos.get(posicao).setOpcao(_opcoes.get(7));
+				if(direcao == 1 && _elementos.get(posicao).getOpcao() == _opcoes.get(4) )
+					_elementos.get(posicao).setOpcao(_opcoes.get(8));
+			}
+			if(comando.contains("esquerda")){
+				System.out.println("Achou comando esquerda + " + posicao);
+				if(direcao == 1)
+					direcao = 4;
+				else if(direcao == 2)
+					direcao = 1;
+				else if(direcao == 3)
+					direcao = 2;
+				else if(direcao == 4)
+					direcao = 3;
+				
+				if(direcao == 2 && _elementos.get(posicao).getOpcao() == _opcoes.get(3) )
+					_elementos.get(posicao).setOpcao(_opcoes.get(8));
+				if(direcao == 3 && _elementos.get(posicao).getOpcao() == _opcoes.get(4) )
+					_elementos.get(posicao).setOpcao(_opcoes.get(5));
+				if(direcao == 4 && _elementos.get(posicao).getOpcao() == _opcoes.get(3) )
+					_elementos.get(posicao).setOpcao(_opcoes.get(6));
+				if(direcao == 1 && _elementos.get(posicao).getOpcao() == _opcoes.get(4) )
+					_elementos.get(posicao).setOpcao(_opcoes.get(7));
+			}
+			if(comando.equals("fim")){
+				_elementos.get(posicao).setOpcao(_opcoes.get(1));
 			}
 				
 		}
@@ -106,11 +145,19 @@ public class RespostaBean {
 	}
 	
 	private int incremento(int direcao){
-		// direção = 1 => direita (incremento +1)
+		/* direcao = 1 => incremento +1
+		 * direcao = 2 => incremento +12
+		 * direcao = 3 => incremento -1
+		 * direcao = 4 => incremento -12
+		 * */
 		if(direcao == 1)
 			return 1;
 		else if(direcao == 2)
 			return 12;
+		else if(direcao == 3)
+			return -1;
+		else if(direcao == 4)
+			return -12;
 		else
 			return 0;
 	}
