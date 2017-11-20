@@ -13,11 +13,13 @@ import dominio.Opcao;
 import dominio._Atividade;
 import dominio._Elemento;
 import dominio._Opcao;
+import dominio._Resposta;
 import persistencia.AtividadeDAO;
 import persistencia.ElementoDAO;
 import persistencia._AtividadeDAO;
 import persistencia._ElementoDAO;
 import persistencia._OpcaoDAO;
+import persistencia._RespostaDAO;
 
 @ManagedBean
 @SessionScoped
@@ -26,18 +28,22 @@ public class AtividadeBean {
 	private _AtividadeDAO _atividadeDao;
 	private _OpcaoDAO _opcaoDao;
 	private _ElementoDAO _elementoDao;
+	private _RespostaDAO _respostaDao;
 	private _Atividade _atividade;
 	private List<_Atividade> _atividades;
 	private List<_Opcao> _opcoes;
 	private List<_Elemento> _elementos;
+	private List<_Resposta> _respostas;
 
 	public AtividadeBean() {
 		_atividadeDao = new _AtividadeDAO();
 		_opcaoDao = new _OpcaoDAO();
 		_elementoDao = new _ElementoDAO();
+		_respostaDao = new _RespostaDAO();
 		_atividade = new _Atividade();
 		_opcoes = _opcaoDao.listarTodos();
 		_elementos = new ArrayList();
+		_respostas = new ArrayList();
 		_atividadeDao.listarTodos();
 		for (int i = 0; i < 60; i++) {
 			_Elemento _e = new _Elemento();
@@ -96,8 +102,14 @@ public class AtividadeBean {
 	public String verAtividade(_Atividade _ativ) {
 		this._atividade = _ativ;
 		this._elementos = _elementoDao.getElementosPorAtividade(_atividade);
+		this._respostas = _respostaDao.listarRespostaPorAtividade(_atividade);
 		System.out.println("lista ok");
 		return "atividade.xhtml";
+//		return "resposta.xhtml";
+	}
+	
+	public String verResposta(){
+		return "resposta.xhtml";
 	}
 
 	public String responderAtividade() {
@@ -160,6 +172,14 @@ public class AtividadeBean {
 
 	public void set_atividades(List<_Atividade> _atividades) {
 		this._atividades = _atividades;
+	}
+
+	public List<_Resposta> get_respostas() {
+		return _respostas;
+	}
+
+	public void set_respostas(List<_Resposta> _respostas) {
+		this._respostas = _respostas;
 	}
 
 }

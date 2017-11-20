@@ -32,6 +32,7 @@ public class RespostaBean {
 	private _OpcaoDAO opcaoDao;
 	private _Atividade atividade;
 	private List<_ElementoS> _elementosResposta;
+	List<_Elemento> elementosAtividade;
 	private List<_Opcao> _opcoes;
 	
 	public RespostaBean(){
@@ -42,11 +43,17 @@ public class RespostaBean {
 		elementoDao = new _ElementoDAO();
 		opcaoDao = new _OpcaoDAO();
 		
-		atividade = (_Atividade) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("atividade");
+		
+		if( (_Atividade) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("atividade") != null)
+			atividade = (_Atividade) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("atividade");
+		else
+			atividade = null;
+		
 		resposta.setAtividade(atividade);
 		System.out.println("Atividade na sessao: " + atividade.getNome());
 		
 		_opcoes = opcaoDao.listarTodos();
+		elementosAtividade = elementoDao.getElementosPorAtividade(resposta.getAtividade());
 		_elementosResposta = new ArrayList();
 		for (int i = 0; i < 60; i++) {
 			_ElementoS _e = new _ElementoS();
@@ -54,8 +61,20 @@ public class RespostaBean {
 			_e.setOpcao(_opcoes.get(0));
 			if (i == 0)
 				_e.setOpcao(_opcoes.get(1));
+			else if(elementosAtividade.get(i).getOpcao().getStatus() == _Status.PROIBIDO)
+			{
+				_e.setOpcao(elementosAtividade.get(i).getOpcao());
+				System.out.println();
+			}
 			_elementosResposta.add(_e);
 		}
+	}
+	
+	public String verResposta(){
+		//this.resposta = resposta;
+		//System.out.println("Bean Resposta: " + resposta.getResultado());
+		System.out.println("ver resposta");
+		return "/resposta.xhtml";
 	}
 	
 	public void submeter(){
@@ -74,10 +93,15 @@ public class RespostaBean {
 	}
 	
 	public void limparCenario() {
+		int i = 0;
 		for (_ElementoS e : _elementosResposta) {
 			e.setOpcao(_opcoes.get(0));
 			if (e.getPosicao() == 0)
 				e.setOpcao(_opcoes.get(1));
+			else if(elementosAtividade.get(i).getOpcao().getStatus() == _Status.PROIBIDO){
+				System.out.println("Mostrar obstaculo");
+				e.setOpcao(elementosAtividade.get(i).getOpcao());
+			}
 		}
 	}
 	
@@ -177,8 +201,6 @@ public class RespostaBean {
 	}
 	
 	private String validar(){
-		List<_Elemento> elementosAtividade = elementoDao.getElementosPorAtividade(resposta.getAtividade());
-		List<_ElementoS> elementosResposta = _elementosResposta;
 		
 		for(int i=0; i<elementosAtividade.size();i++){
 			if(elementosAtividade.get(i).getOpcao().getStatus() == _Status.OBRIGATORIO && 

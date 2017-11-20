@@ -1,13 +1,13 @@
 package dominio;
 
 import java.io.Serializable;
-import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+
+import persistencia._RespostaDAO;
 
 @Entity
 public class _Atividade implements Serializable {
@@ -53,4 +53,8 @@ public class _Atividade implements Serializable {
 		this.descricao = descricao;
 	}
     
+	public int getQtdRespostas(){
+		_RespostaDAO _Rdao = new _RespostaDAO();
+		return _Rdao.listarRespostaPorAtividade(this).size();
+	}
 }
