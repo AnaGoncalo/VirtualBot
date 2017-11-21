@@ -21,4 +21,13 @@ public class _AtividadeDAO extends DAO {
 		}
 		return null;
 	}
+	
+	public _Atividade ultimaAtividade(){
+		List<_Atividade> lista = listarTodos();
+		_Atividade ultima = null;
+		for(_Atividade _ati: lista){
+			ultima = _ati;
+		}
+		return ultima;
+	}
 }

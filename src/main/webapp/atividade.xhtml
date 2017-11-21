@@ -78,9 +78,6 @@
 							<div class="col-sm-12">
 								<!--Tabela de respostas -->
 								<h:form>
-								<h:commandLink  role="separator" class="divider" 
-								action="#{atividadeBean.verAtividade(atividade)}" value="Ver " />
-								
 									<h:dataTable value="#{atividadeBean._respostas}"
 										var="resposta"
 										class="table table-striped table-bordered table-responsive text-center">
@@ -106,8 +103,8 @@
 											<f:facet name="header">
 												<h:outputText value="Opções" />
 											</f:facet>
-											<h:commandLink  role="separator" class="divider" 
-											action="resposta.xhtml" 
+											<h:commandButton  role="separator" class="divider" 
+											action="#{respostaBean.verResposta(resposta)}" 
 											value="Ver " />
 										</h:column>
 									</h:dataTable>

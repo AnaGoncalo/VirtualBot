@@ -65,7 +65,7 @@ public class AtividadeBean {
 	public String addAtividade() {
 		_atividadeDao.inserir(_atividade);
 		System.out.println("atividade : " + _atividade.getNome());
-		_atividade = _atividadeDao.buscarPorTitulo(_atividade.getNome());
+		_atividade = _atividadeDao.ultimaAtividade();
 		System.out.println("id da atividade cadastrada : " + _atividade.getId());
 		for (_Elemento _ele : _elementos) {
 			_ele.setAtividade(_atividade);
@@ -109,11 +109,13 @@ public class AtividadeBean {
 	}
 	
 	public String verResposta(){
+		System.out.println("Entro no ver resposta");
 		return "resposta.xhtml";
 	}
 
 	public String responderAtividade() {
 		System.out.println(_atividade.getNome());
+		
 		FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("atividade", _atividade);
 		return "responder.xhtml";
 	}

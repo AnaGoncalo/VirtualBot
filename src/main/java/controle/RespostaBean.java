@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.RequestScoped;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 
@@ -21,7 +22,7 @@ import persistencia._OpcaoDAO;
 import persistencia._RespostaDAO;
 
 @ManagedBean
-@SessionScoped
+@RequestScoped
 public class RespostaBean {
 	
 	private _Resposta resposta;
@@ -31,9 +32,9 @@ public class RespostaBean {
 	private _ElementoDAO elementoDao;
 	private _OpcaoDAO opcaoDao;
 	private _Atividade atividade;
-	private List<_ElementoS> _elementosResposta;
+	private List<_ElementoS> elementosResposta;
 	List<_Elemento> elementosAtividade;
-	private List<_Opcao> _opcoes;
+	private List<_Opcao> opcoes;
 	
 	public RespostaBean(){
 		atividade = new _Atividade();
@@ -44,46 +45,45 @@ public class RespostaBean {
 		elementoDao = new _ElementoDAO();
 		opcaoDao = new _OpcaoDAO();
 		
+		opcoes = opcaoDao.listarTodos();
 		
-		if( (_Atividade) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("atividade") != null)
+		if( (_Atividade) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("atividade") != null){
 			atividade = (_Atividade) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("atividade");
-		else
-			atividade.setNome("-");
-		
-		resposta.setAtividade(atividade);
-		System.out.println("Atividade na sessao: " + atividade.getNome() + atividade.getId());
-		
-		_opcoes = opcaoDao.listarTodos();
-		if(!atividade.getNome().equals("-")){
+			resposta.setAtividade(atividade);
 			elementosAtividade = elementoDao.getElementosPorAtividade(resposta.getAtividade());
+			System.out.println("Atividade na sessao: " + atividade.getNome() + atividade.getId());
 		}
-//		else
-//		{
-//			for(int i = 0; i < 60; i++){
-//				_Elemento _e = new _Elemento();
-//				_e.setPosicao(i);
-//				_e.setOpcao(_opcoes.get(0));
-//				if (i == 0)
-//					_e.setOpcao(_opcoes.get(1));
-//				elementosAtividade.add(_e);
-//			}
-//		}
-		_elementosResposta = new ArrayList();
+		else{
+			atividade.setNome("-");
+			elementosAtividade = new ArrayList();
+			for (int i = 0; i < 60; i++) {
+				_Elemento _e = new _Elemento();
+				_e.setPosicao(i);
+				_e.setOpcao(opcoes.get(0));
+				if (i == 0)
+					_e.setOpcao(opcoes.get(1));
+				elementosAtividade.add(_e);
+			}
+		}
+		
+		
+		elementosResposta = new ArrayList();
 		for (int i = 0; i < 60; i++) {
 			_ElementoS _e = new _ElementoS();
 			_e.setPosicao(i);
-			_e.setOpcao(_opcoes.get(0));
+			_e.setOpcao(opcoes.get(0));
 			if (i == 0)
-				_e.setOpcao(_opcoes.get(1));
-			_elementosResposta.add(_e);
+				_e.setOpcao(opcoes.get(1));
+			elementosResposta.add(_e);
 		}
-//		limparCenario();
+		limparCenario();
 	}
 	
-	public String verResposta(){
-		//this.resposta = resposta;
-		//System.out.println("Bean Resposta: " + resposta.getResultado());
+	public String verResposta(_Resposta resposta){
+		this.resposta = resposta;
+		System.out.println("Bean Resposta: " + resposta.getResultado());
 		System.out.println("ver resposta");
+		elementosResposta = elementoSDao.getElementosPorResposta(resposta);
 		return "/resposta.xhtml";
 	}
 	
@@ -93,7 +93,7 @@ public class RespostaBean {
 		respostaDao.inserir(resposta);
 		resposta = respostaDao.ultimaResposta();
 		System.out.println("id da ultima resposta " + resposta.getId());
-		for (_ElementoS _ele : _elementosResposta) {
+		for (_ElementoS _ele : elementosResposta) {
 			_ele.setResposta(resposta);
 			elementoSDao.inserir(_ele);
 		}
@@ -103,15 +103,36 @@ public class RespostaBean {
 	}
 	
 	public void limparCenario() {
+		if( (_Atividade) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("atividade") != null){
+			atividade = (_Atividade) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("atividade");
+			resposta.setAtividade(atividade);
+			elementosAtividade = elementoDao.getElementosPorAtividade(resposta.getAtividade());
+			System.out.println("Atividade na sessao: " + atividade.getNome() + atividade.getId());
+		}
+		else{
+			atividade.setNome("-");
+			elementosAtividade = new ArrayList();
+			for (int i = 0; i < 60; i++) {
+				_Elemento _e = new _Elemento();
+				_e.setPosicao(i);
+				_e.setOpcao(opcoes.get(0));
+				if (i == 0)
+					_e.setOpcao(opcoes.get(1));
+				elementosAtividade.add(_e);
+			}
+		}
+		
 		int i = 0;
-		for (_ElementoS e : _elementosResposta) {
-			e.setOpcao(_opcoes.get(0));
+		for (_ElementoS e : elementosResposta) {
+			e.setOpcao(opcoes.get(0));
+			System.out.println(elementosAtividade.get(i).getOpcao().getStatus());
 			if (e.getPosicao() == 0)
-				e.setOpcao(_opcoes.get(1));
+				e.setOpcao(opcoes.get(1));
 			else if(elementosAtividade.get(i).getOpcao().getStatus() == _Status.PROIBIDO){
 				System.out.println("Mostrar obstaculo");
 				e.setOpcao(elementosAtividade.get(i).getOpcao());
 			}
+			i++;
 		}
 	}
 	
@@ -126,12 +147,40 @@ public class RespostaBean {
 		String[] codigo = co.split(" ");
 		int posicao = 0;
 		int direcao = 1;
-		for(String comando: codigo){
+		for(int j = 0; j<codigo.length; j++){
+			String comando = codigo[j];
 			System.out.println(comando);
+			/* inicio se(ultra()>5) entao{direita(1)} frente(2) fim */
 			if(comando.equals("inicio")){
-				_elementosResposta.get(posicao).setOpcao(_opcoes.get(1));
+				elementosResposta.get(posicao).setOpcao(opcoes.get(1));
 			}
-			if(comando.contains("frente")){
+			else if(comando.contains("se")){
+				System.out.println("Achou comando se");
+				String condicao = comando.replaceAll("se", "");
+				condicao = condicao.substring(1, condicao.length()-1);
+				System.out.println("Condição: " + condicao);
+				if(condicao.contains("<")){
+					String[] condi = condicao.split("<");
+					if(condi[0].contains("ultra")){
+						System.out.println("Elemento da atividade: "+elementosAtividade.get(posicao+Integer.parseInt(condi[1])).getOpcao().getStatus());
+						if(elementosAtividade.get(posicao+Integer.parseInt(condi[1])).getOpcao().getStatus()
+								.equals(_Status.PROIBIDO)){
+							continue;
+						}
+						else{
+							int x = 1;
+							do{
+								System.out.println("Nao vai executar " + codigo[j+x]);
+								codigo[j+x] = "";
+								x++;
+							}while(!codigo[j+x].contains("}"));
+								
+						}
+						
+					}
+				}
+			}
+			else if(comando.contains("frente")){
 				System.out.println("Achou comando frente + " + posicao);
 				String tempo = comando;
 				tempo = tempo.replaceAll("frente", "");
@@ -140,12 +189,12 @@ public class RespostaBean {
 				for(int i = 0; i < Integer.parseInt(tempo); i++){
 					posicao += incremento(direcao);
 					if(direcao == 1 || direcao == 3)
-						_elementosResposta.get(posicao).setOpcao(_opcoes.get(3));
+						elementosResposta.get(posicao).setOpcao(opcoes.get(3));
 					if(direcao == 2 || direcao == 4)
-						_elementosResposta.get(posicao).setOpcao(_opcoes.get(4));
+						elementosResposta.get(posicao).setOpcao(opcoes.get(4));
 				}
 			}
-			if(comando.contains("direita")){
+			else if(comando.contains("direita")){
 				System.out.println("Achou comando direita + " + posicao);
 				if(direcao == 1)
 					direcao = 2;
@@ -156,16 +205,16 @@ public class RespostaBean {
 				else if(direcao == 4)
 					direcao = 1;
 				
-				if(direcao == 2 && _elementosResposta.get(posicao).getOpcao() == _opcoes.get(3) )
-					_elementosResposta.get(posicao).setOpcao(_opcoes.get(5));
-				if(direcao == 3 && _elementosResposta.get(posicao).getOpcao() == _opcoes.get(4) )
-					_elementosResposta.get(posicao).setOpcao(_opcoes.get(6));
-				if(direcao == 4 && _elementosResposta.get(posicao).getOpcao() == _opcoes.get(3) )
-					_elementosResposta.get(posicao).setOpcao(_opcoes.get(7));
-				if(direcao == 1 && _elementosResposta.get(posicao).getOpcao() == _opcoes.get(4) )
-					_elementosResposta.get(posicao).setOpcao(_opcoes.get(8));
+				if(direcao == 2 && elementosResposta.get(posicao).getOpcao() == opcoes.get(3) )
+					elementosResposta.get(posicao).setOpcao(opcoes.get(5));
+				if(direcao == 3 && elementosResposta.get(posicao).getOpcao() == opcoes.get(4) )
+					elementosResposta.get(posicao).setOpcao(opcoes.get(6));
+				if(direcao == 4 && elementosResposta.get(posicao).getOpcao() == opcoes.get(3) )
+					elementosResposta.get(posicao).setOpcao(opcoes.get(7));
+				if(direcao == 1 && elementosResposta.get(posicao).getOpcao() == opcoes.get(4) )
+					elementosResposta.get(posicao).setOpcao(opcoes.get(8));
 			}
-			if(comando.contains("esquerda")){
+			else if(comando.contains("esquerda")){
 				System.out.println("Achou comando esquerda + " + posicao);
 				if(direcao == 1)
 					direcao = 4;
@@ -176,17 +225,17 @@ public class RespostaBean {
 				else if(direcao == 4)
 					direcao = 3;
 				
-				if(direcao == 2 && _elementosResposta.get(posicao).getOpcao() == _opcoes.get(3) )
-					_elementosResposta.get(posicao).setOpcao(_opcoes.get(8));
-				if(direcao == 3 && _elementosResposta.get(posicao).getOpcao() == _opcoes.get(4) )
-					_elementosResposta.get(posicao).setOpcao(_opcoes.get(5));
-				if(direcao == 4 && _elementosResposta.get(posicao).getOpcao() == _opcoes.get(3) )
-					_elementosResposta.get(posicao).setOpcao(_opcoes.get(6));
-				if(direcao == 1 && _elementosResposta.get(posicao).getOpcao() == _opcoes.get(4) )
-					_elementosResposta.get(posicao).setOpcao(_opcoes.get(7));
+				if(direcao == 2 && elementosResposta.get(posicao).getOpcao() == opcoes.get(3) )
+					elementosResposta.get(posicao).setOpcao(opcoes.get(8));
+				if(direcao == 3 && elementosResposta.get(posicao).getOpcao() == opcoes.get(4) )
+					elementosResposta.get(posicao).setOpcao(opcoes.get(5));
+				if(direcao == 4 && elementosResposta.get(posicao).getOpcao() == opcoes.get(3) )
+					elementosResposta.get(posicao).setOpcao(opcoes.get(6));
+				if(direcao == 1 && elementosResposta.get(posicao).getOpcao() == opcoes.get(4) )
+					elementosResposta.get(posicao).setOpcao(opcoes.get(7));
 			}
-			if(comando.equals("fim")){
-				_elementosResposta.get(posicao).setOpcao(_opcoes.get(1));
+			else if(comando.equals("fim")){
+				elementosResposta.get(posicao).setOpcao(opcoes.get(1));
 			}
 				
 		}
@@ -214,11 +263,11 @@ public class RespostaBean {
 		
 		for(int i=0; i<elementosAtividade.size();i++){
 			if(elementosAtividade.get(i).getOpcao().getStatus() == _Status.OBRIGATORIO && 
-					_elementosResposta.get(i).getOpcao().getStatus() != _Status.OBRIGATORIO){
+					elementosResposta.get(i).getOpcao().getStatus() != _Status.OBRIGATORIO){
 				return "Errado";
 			}
 			if(elementosAtividade.get(i).getOpcao().getStatus() == _Status.PROIBIDO && 
-					_elementosResposta.get(i).getOpcao().getStatus() == _Status.OBRIGATORIO){
+					elementosResposta.get(i).getOpcao().getStatus() == _Status.OBRIGATORIO){
 				return "Errado";
 			}
 		}
@@ -266,20 +315,61 @@ public class RespostaBean {
 	}
 
 	public List<_ElementoS> get_elementos() {
-		return _elementosResposta;
+		return elementosResposta;
 	}
 
 	public void set_elementos(List<_ElementoS> _elementos) {
-		this._elementosResposta = _elementos;
+		this.elementosResposta = _elementos;
 	}
 
 	public List<_Opcao> get_opcoes() {
-		return _opcoes;
+		return opcoes;
 	}
 
 	public void set_opcoes(List<_Opcao> _opcoes) {
-		this._opcoes = _opcoes;
+		this.opcoes = _opcoes;
 	}
+
+	public _ElementoSDAO getElementoSDao() {
+		return elementoSDao;
+	}
+
+	public void setElementoSDao(_ElementoSDAO elementoSDao) {
+		this.elementoSDao = elementoSDao;
+	}
+
+	public _ElementoDAO getElementoDao() {
+		return elementoDao;
+	}
+
+	public void setElementoDao(_ElementoDAO elementoDao) {
+		this.elementoDao = elementoDao;
+	}
+
+	public List<_ElementoS> getElementosResposta() {
+		return elementosResposta;
+	}
+
+	public void setElementosResposta(List<_ElementoS> elementosResposta) {
+		this.elementosResposta = elementosResposta;
+	}
+
+	public List<_Elemento> getElementosAtividade() {
+		return elementosAtividade;
+	}
+
+	public void setElementosAtividade(List<_Elemento> elementosAtividade) {
+		this.elementosAtividade = elementosAtividade;
+	}
+
+	public List<_Opcao> getOpcoes() {
+		return opcoes;
+	}
+
+	public void setOpcoes(List<_Opcao> opcoes) {
+		this.opcoes = opcoes;
+	}
+	
 	
 
 }
