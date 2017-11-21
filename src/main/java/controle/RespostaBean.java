@@ -36,6 +36,7 @@ public class RespostaBean {
 	private List<_Opcao> _opcoes;
 	
 	public RespostaBean(){
+		atividade = new _Atividade();
 		resposta = new _Resposta();
 		respostaDao = new _RespostaDAO();
 		elementoSDao = new _ElementoSDAO();
@@ -47,13 +48,26 @@ public class RespostaBean {
 		if( (_Atividade) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("atividade") != null)
 			atividade = (_Atividade) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("atividade");
 		else
-			atividade = null;
+			atividade.setNome("-");
 		
 		resposta.setAtividade(atividade);
-		System.out.println("Atividade na sessao: " + atividade.getNome());
+		System.out.println("Atividade na sessao: " + atividade.getNome() + atividade.getId());
 		
 		_opcoes = opcaoDao.listarTodos();
-		elementosAtividade = elementoDao.getElementosPorAtividade(resposta.getAtividade());
+		if(!atividade.getNome().equals("-")){
+			elementosAtividade = elementoDao.getElementosPorAtividade(resposta.getAtividade());
+		}
+//		else
+//		{
+//			for(int i = 0; i < 60; i++){
+//				_Elemento _e = new _Elemento();
+//				_e.setPosicao(i);
+//				_e.setOpcao(_opcoes.get(0));
+//				if (i == 0)
+//					_e.setOpcao(_opcoes.get(1));
+//				elementosAtividade.add(_e);
+//			}
+//		}
 		_elementosResposta = new ArrayList();
 		for (int i = 0; i < 60; i++) {
 			_ElementoS _e = new _ElementoS();
@@ -61,13 +75,9 @@ public class RespostaBean {
 			_e.setOpcao(_opcoes.get(0));
 			if (i == 0)
 				_e.setOpcao(_opcoes.get(1));
-			else if(elementosAtividade.get(i).getOpcao().getStatus() == _Status.PROIBIDO)
-			{
-				_e.setOpcao(elementosAtividade.get(i).getOpcao());
-				System.out.println();
-			}
 			_elementosResposta.add(_e);
 		}
+//		limparCenario();
 	}
 	
 	public String verResposta(){

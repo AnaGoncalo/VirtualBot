@@ -8,33 +8,98 @@
 	<title>Virtual Bot - Aprender</title>
 	<h:outputStylesheet library="css" name="bootstrap.css" />
 	<h:outputStylesheet library="css" name="bootstrap-theme.min.css" />
-	
+
 </h:head>
 <h:body>
 	<!--Página topo-->
 	<ui:include src="topo.xhtml" />
-	
+
 	<!--Área de mensagens do sistema-->
 	<div style="margin-top: 60px">
 		<h:messages style="margin-left: 0;" class="alert alert-danger" />
 	</div>
-	
+
 	<!--Conteúdo da página-->
 	<div class="container-fluid">
-	
+
 		<div class="row page-header">
 			<div class="col-sm-12 text-center">
 				<h2>Aprender</h2>
 			</div>
 		</div>
-		
+
 		<div class="container">
 			<div class="row">
-				
+				<div class="col-sm-6">
+					<h4>Comandos de Movimentação</h4>
+					<ul>
+						<li>frente(1)
+							<p>Movimenta o robô para frente, deve ser passado como
+								paramêtro quantas unidades de tempo/espaço o robô deverá
+								pecorrer.</p>
+						</li>
+					</ul>
+					<ul>
+						<li>tras(1)
+							<p>Movimenta o robô para trás, deve ser passado como
+								paramêtro quantas unidades de tempo/espaço o robô deverá
+								pecorrer.</p>
+						</li>
+					</ul>
+					<ul>
+						<li>direita(1)
+							<p>O robô faz uma curva para direita no seu eixo.</p>
+						</li>
+					</ul>
+					<ul>
+						<li>esquerda(1)
+							<p>O robô faz uma curva para esquerda no seu eixo.</p>
+						</li>
+					</ul>
+					<ul>
+						<li>parar()
+							<p>O robô para de se movimentar.</p>
+						</li>
+					</ul>
+				</div>
+				<div class="col-sm-6">
+				<div class="row">
+						<h4>Sensores</h4>
+						<ul>
+							<li>ultra()
+								<p>Sensor ultrasom, está posicionado na frente do robô, funciona
+								como os olhos do robô.</p>
+							</li>
+							<li>luz()
+								<p>Sensor de luz, está posicionado na frente do robô, funciona
+								como os olhos do robô.</p>
+							</li>
+						</ul>
+					</div>
+					<div class="row">
+						<h4>Estruturas condicionais</h4>
+						<ul>
+							<li>se(ultra()>1) entao {frente(1)}
+								<p>Condição "Se", o robô só irá realizar o bloco de comandos
+									se a condição for verdadeira</p>
+							</li>
+						</ul>
+					</div>
+					<div class="row">
+						<h4>Estruturas de repetição</h4>
+						<ul>
+							<li>para(){}
+								<p>Condição "Se", o robô só irá realizar o bloco de comandos
+									se a condição for verdadeira</p>
+							</li>
+						</ul>
+					</div>
+				</div>
+
 			</div>
 		</div>
 	</div>
-	
+
 </h:body>
 </html>
 
