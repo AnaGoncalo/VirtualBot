@@ -35,6 +35,8 @@ public class RespostaBean {
 	private List<_ElementoS> elementosResposta;
 	List<_Elemento> elementosAtividade;
 	private List<_Opcao> opcoes;
+	int posicao = 0;
+	int direcao = 1;
 	
 	public RespostaBean(){
 		atividade = new _Atividade();
@@ -145,16 +147,14 @@ public class RespostaBean {
 		co = co.replaceAll("\n", "");
 		System.out.println(co);
 		String[] codigo = co.split(" ");
-		int posicao = 0;
-		int direcao = 1;
+		posicao = 0;
+		direcao = 1;
 		for(int j = 0; j<codigo.length; j++){
 			String comando = codigo[j];
 			System.out.println(comando);
 			/* inicio se(ultra()>5) entao{direita(1)} frente(2) fim */
-			if(comando.equals("inicio")){
-				elementosResposta.get(posicao).setOpcao(opcoes.get(1));
-			}
-			else if(comando.contains("se")){
+			
+			if(comando.contains("se")){
 				System.out.println("Achou comando se");
 				String condicao = comando.replaceAll("se", "");
 				condicao = condicao.substring(1, condicao.length()-1);
@@ -180,65 +180,105 @@ public class RespostaBean {
 					}
 				}
 			}
-			else if(comando.contains("frente")){
-				System.out.println("Achou comando frente + " + posicao);
-				String tempo = comando;
-				tempo = tempo.replaceAll("frente", "");
-				tempo = tempo.substring(1, tempo.length()-1);
-				System.out.println("Tempo: " + tempo);
-				for(int i = 0; i < Integer.parseInt(tempo); i++){
-					posicao += incremento(direcao);
-					if(direcao == 1 || direcao == 3)
-						elementosResposta.get(posicao).setOpcao(opcoes.get(3));
-					if(direcao == 2 || direcao == 4)
-						elementosResposta.get(posicao).setOpcao(opcoes.get(4));
+			else if(comando.contains("repita")){
+				System.out.println("Achou comando repita");
+				int qtd = Integer.parseInt(codigo[j+1])-1;
+				int a = 0;
+				int b = j+1;
+				while(a < qtd){
+					while(!codigo[b].contains("}")){
+						System.out.println("a:"+a+" b:"+b+" comando:"+codigo[b]);
+						simulador(codigo[b]);
+						b++;
+					}
+					b = j+1;
+					a++;
 				}
 			}
-			else if(comando.contains("direita")){
-				System.out.println("Achou comando direita + " + posicao);
-				if(direcao == 1)
-					direcao = 2;
-				else if(direcao == 2)
-					direcao = 3;
-				else if(direcao == 3)
-					direcao = 4;
-				else if(direcao == 4)
-					direcao = 1;
-				
-				if(direcao == 2 && elementosResposta.get(posicao).getOpcao() == opcoes.get(3) )
-					elementosResposta.get(posicao).setOpcao(opcoes.get(5));
-				if(direcao == 3 && elementosResposta.get(posicao).getOpcao() == opcoes.get(4) )
-					elementosResposta.get(posicao).setOpcao(opcoes.get(6));
-				if(direcao == 4 && elementosResposta.get(posicao).getOpcao() == opcoes.get(3) )
-					elementosResposta.get(posicao).setOpcao(opcoes.get(7));
-				if(direcao == 1 && elementosResposta.get(posicao).getOpcao() == opcoes.get(4) )
-					elementosResposta.get(posicao).setOpcao(opcoes.get(8));
-			}
-			else if(comando.contains("esquerda")){
-				System.out.println("Achou comando esquerda + " + posicao);
-				if(direcao == 1)
-					direcao = 4;
-				else if(direcao == 2)
-					direcao = 1;
-				else if(direcao == 3)
-					direcao = 2;
-				else if(direcao == 4)
-					direcao = 3;
-				
-				if(direcao == 2 && elementosResposta.get(posicao).getOpcao() == opcoes.get(3) )
-					elementosResposta.get(posicao).setOpcao(opcoes.get(8));
-				if(direcao == 3 && elementosResposta.get(posicao).getOpcao() == opcoes.get(4) )
-					elementosResposta.get(posicao).setOpcao(opcoes.get(5));
-				if(direcao == 4 && elementosResposta.get(posicao).getOpcao() == opcoes.get(3) )
-					elementosResposta.get(posicao).setOpcao(opcoes.get(6));
-				if(direcao == 1 && elementosResposta.get(posicao).getOpcao() == opcoes.get(4) )
-					elementosResposta.get(posicao).setOpcao(opcoes.get(7));
-			}
-			else if(comando.equals("fim")){
-				elementosResposta.get(posicao).setOpcao(opcoes.get(1));
+			else{
+				simulador(comando);
 			}
 				
 		}
+	}
+	
+	private void simulador(String comando){
+		System.out.println("Metodo simulador: " + comando);
+		if(comando.equals("inicio")){
+			elementosResposta.get(posicao).setOpcao(opcoes.get(1));
+		}
+		else if(comando.contains("frente")){
+			System.out.println("Achou comando frente + " + posicao);
+			frente(comando);
+		}
+		else if(comando.contains("direita")){
+			System.out.println("Achou comando direita + " + posicao);
+			direita();
+		}
+		else if(comando.contains("esquerda")){
+			System.out.println("Achou comando esquerda + " + posicao);
+			esquerda();
+		}
+		else if(comando.equals("fim")){
+			elementosResposta.get(posicao).setOpcao(opcoes.get(1));
+		}
+		
+	}
+	
+	private void frente(String comando){
+		System.out.println("Achou comando frente + " + posicao);
+		String tempo = comando;
+		tempo = tempo.replaceAll("frente", "");
+		tempo = tempo.substring(1, tempo.length()-1);
+		System.out.println("Tempo: " + tempo);
+		for(int i = 0; i < Integer.parseInt(tempo); i++){
+			posicao += incremento(direcao);
+			if(direcao == 1 || direcao == 3)
+				elementosResposta.get(posicao).setOpcao(opcoes.get(3));
+			if(direcao == 2 || direcao == 4)
+				elementosResposta.get(posicao).setOpcao(opcoes.get(4));
+		}
+	}
+	
+	private void direita(){
+		System.out.println("Achou comando direita + " + posicao);
+		if(direcao == 1)
+			direcao = 2;
+		else if(direcao == 2)
+			direcao = 3;
+		else if(direcao == 3)
+			direcao = 4;
+		else if(direcao == 4)
+			direcao = 1;
+		
+		if(direcao == 2 && elementosResposta.get(posicao).getOpcao() == opcoes.get(3) )
+			elementosResposta.get(posicao).setOpcao(opcoes.get(5));
+		if(direcao == 3 && elementosResposta.get(posicao).getOpcao() == opcoes.get(4) )
+			elementosResposta.get(posicao).setOpcao(opcoes.get(6));
+		if(direcao == 4 && elementosResposta.get(posicao).getOpcao() == opcoes.get(3) )
+			elementosResposta.get(posicao).setOpcao(opcoes.get(7));
+		if(direcao == 1 && elementosResposta.get(posicao).getOpcao() == opcoes.get(4) )
+			elementosResposta.get(posicao).setOpcao(opcoes.get(8));
+	}
+	
+	private void esquerda(){
+		if(direcao == 1)
+			direcao = 4;
+		else if(direcao == 2)
+			direcao = 1;
+		else if(direcao == 3)
+			direcao = 2;
+		else if(direcao == 4)
+			direcao = 3;
+		
+		if(direcao == 2 && elementosResposta.get(posicao).getOpcao() == opcoes.get(3) )
+			elementosResposta.get(posicao).setOpcao(opcoes.get(8));
+		if(direcao == 3 && elementosResposta.get(posicao).getOpcao() == opcoes.get(4) )
+			elementosResposta.get(posicao).setOpcao(opcoes.get(5));
+		if(direcao == 4 && elementosResposta.get(posicao).getOpcao() == opcoes.get(3) )
+			elementosResposta.get(posicao).setOpcao(opcoes.get(6));
+		if(direcao == 1 && elementosResposta.get(posicao).getOpcao() == opcoes.get(4) )
+			elementosResposta.get(posicao).setOpcao(opcoes.get(7));
 	}
 	
 	private int incremento(int direcao){
